@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ZipID</string>
+    <string name="awaiting_verification">Awaiting Verification</string>
+    <string name="completed">Completed</string>
+    <color name="main_color_light">#ffE9EBE8</color>
+
+</resources>

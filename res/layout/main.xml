@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="fill_parent"
+              android:layout_height="fill_parent"
+        >
+    <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/awaiting_verification"
+            android:textSize="20dp"
+            android:padding="10dp"
+            />
+    <ListView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/listAwaitingView">
+        <!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+                      <!--android:layout_width="wrap_content"-->
+                      <!--android:layout_height="wrap_content" >-->
+
+            <!--<ImageView-->
+                    <!--android:id="@+id/avatar"-->
+                    <!--android:layout_width="22px"-->
+                    <!--android:layout_height="22px"-->
+                    <!--android:layout_marginLeft="4px"-->
+                    <!--android:layout_marginRight="10px"-->
+                    <!--android:layout_marginTop="4px" >-->
+            <!--</ImageView>-->
+
+            <!--<TextView-->
+                    <!--android:id="@+id/name"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:textSize="20px" >-->
+            <!--</TextView>-->
+        <!--</LinearLayout>-->
+    </ListView>
+
+    <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/awaiting_verification"
+            android:scaleX="1.5"
+            android:scaleY="1.5"
+            />
+    <ListView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/listCompletedView"/>
+</LinearLayout>
+
