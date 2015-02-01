@@ -8,20 +8,19 @@ public class Person {
     public enum Sex { Male, Female }
 
     private String firstName;
-    private String middleName;
     private String lastName;
     private Sex sex;
 
     private IdCheck idCheck;
     private boolean idCheckComplete;
-    private long jobId;
+    private long matterId;
 
-    public long getJobId() {
-        return jobId;
+    public long getMatterId() {
+        return matterId;
     }
 
-    public void setJobId(long jobId) {
-        this.jobId = jobId;
+    public void setMatterId(long matterId) {
+        this.matterId = matterId;
     }
 
     public String getFirstName() {
@@ -30,14 +29,6 @@ public class Person {
 
     public void setFirstName(String firstName) {
         this.firstName = firstName;
-    }
-
-    public String getMiddleName() {
-        return middleName;
-    }
-
-    public void setMiddleName(String middleName) {
-        this.middleName = middleName;
     }
 
     public String getLastName() {
