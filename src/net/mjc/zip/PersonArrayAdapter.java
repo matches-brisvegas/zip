@@ -9,9 +9,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import net.mjc.zip.domain.Person;
 
-/**
- * Created by matt on 1/02/2015.
- */
 public class PersonArrayAdapter extends ArrayAdapter<Person> {
     private final Context context;
     private final Person[] ppl;
@@ -29,14 +26,19 @@ public class PersonArrayAdapter extends ArrayAdapter<Person> {
 
         Person person = ppl[position];
 
-        TextView textView = (TextView) rowView.findViewById(R.id.description);
-        textView.setText(person.getFirstName() + " " + person.getLastName() + "\nMatter: " + person.getMatterId());
+        TextView nameView = (TextView) rowView.findViewById(R.id.name);
+        nameView.setText(person.getFirstName() + " " + person.getLastName());
+
+        TextView description = (TextView) rowView.findViewById(R.id.description);
+        description.setText("Matter: " + person.getMatterId());
 
         ImageView imageView = (ImageView) rowView.findViewById(R.id.avatar);
+        imageView.setMaxHeight(30);
+        imageView.setMaxWidth(30);
         if (Person.Sex.Male.equals(person.getSex())) {
-            imageView.setImageResource(R.drawable.male);
+            imageView.setImageResource(R.drawable.male40);
         } else {
-            imageView.setImageResource(R.drawable.female);
+            imageView.setImageResource(R.drawable.female40);
         }
         return rowView;
     }

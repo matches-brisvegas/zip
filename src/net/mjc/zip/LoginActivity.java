@@ -2,6 +2,10 @@ package net.mjc.zip;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ExpandableListView;
 import android.widget.ListView;
 import net.mjc.zip.domain.IdCheck;
 import net.mjc.zip.domain.Person;
@@ -29,7 +33,7 @@ public class LoginActivity extends Activity {
 
         setContentView(R.layout.main);
 
-        ppl = new Person[1];
+        ppl = new Person[3];
 
         ppl[0] = new Person();
         ppl[0].setFirstName("Joe");
@@ -38,14 +42,21 @@ public class LoginActivity extends Activity {
         ppl[0].setMatterId(5464233);
         ppl[0].setIdCheck(IdCheck.getIdCheck("NSW-01")); // TODO
 
-//        ppl[1] = new Person();
-//        ppl[1].setFirstName("Karen");
-//        ppl[1].setLastName("Smith");
-//        ppl[1].setSex(Person.Sex.Female);
-//        ppl[1].setMatterId(8743754);
-//        ppl[1].setIdCheck(IdCheck.getIdCheck("NSW-01")); // TODO
+        ppl[1] = new Person();
+        ppl[1].setFirstName("Michelle");
+        ppl[1].setLastName("Jones");
+        ppl[1].setSex(Person.Sex.Female);
+        ppl[1].setMatterId(5632981);
+        ppl[1].setIdCheck(IdCheck.getIdCheck("NSW-01")); // TODO
 
-        pplDone = new Person[1];
+        ppl[2] = new Person();
+        ppl[2].setFirstName("Karen");
+        ppl[2].setLastName("Smith");
+        ppl[2].setSex(Person.Sex.Female);
+        ppl[2].setMatterId(8743754);
+        ppl[2].setIdCheck(IdCheck.getIdCheck("NSW-01")); // TODO
+
+        pplDone = new Person[3];
         pplDone[0] = new Person();
         pplDone[0].setFirstName("Ricky");
         pplDone[0].setLastName("Bobby");
@@ -54,13 +65,58 @@ public class LoginActivity extends Activity {
         pplDone[0].setIdCheck(IdCheck.getIdCheck("NSW-01")); // TODO
         pplDone[0].setIdCheckComplete(true);
 
-        ListView list = (ListView) findViewById(R.id.listAwaitingView);
-        list.setAdapter(new PersonArrayAdapter(this, ppl));
+        pplDone[1] = new Person();
+        pplDone[1].setFirstName("Elizabeth");
+        pplDone[1].setLastName("Knowles");
+        pplDone[1].setSex(Person.Sex.Female);
+        pplDone[1].setMatterId(3276490);
+        pplDone[1].setIdCheck(IdCheck.getIdCheck("NSW-01")); // TODO
+        pplDone[1].setIdCheckComplete(true);
+
+        pplDone[2] = new Person();
+        pplDone[2].setFirstName("Charles");
+        pplDone[2].setLastName("Miller");
+        pplDone[2].setSex(Person.Sex.Male);
+        pplDone[2].setMatterId(5516490);
+        pplDone[2].setIdCheck(IdCheck.getIdCheck("NSW-01")); // TODO
+        pplDone[2].setIdCheckComplete(true);
+
+        ListView listAwaiting = (ListView) findViewById(R.id.listAwaitingView);
+        listAwaiting.setAdapter(new PersonArrayAdapter(this, ppl));
 
         ListView listDone = (ListView) findViewById(R.id.listCompletedView);
         listDone.setAdapter(new PersonArrayAdapter(this, pplDone));
 
+        setListViewHeightBasedOnChildren(listAwaiting);
+        setListViewHeightBasedOnChildren(listDone);
     }
+
+
+    public void setListViewHeightBasedOnChildren(ListView listView) {
+
+        // TODO
+        // You can also add: ListAdapter listAdapter = listView.getAdapter();
+        // to setListViewHeightBasedOnChildren in order to make the adapter generic
+
+        ArrayAdapter listAdapter = (ArrayAdapter) listView.getAdapter();
+        if (listAdapter == null) {
+            // pre-condition
+            return;
+        }
+
+        int totalHeight = 0;
+        for (int i = 0; i < listAdapter.getCount(); i++) {
+            View listItem = listAdapter.getView(i, null, listView);
+            listItem.measure(0, 0);
+            totalHeight += listItem.getMeasuredHeight();
+        }
+
+        ViewGroup.LayoutParams params = listView.getLayoutParams();
+        params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+        listView.setLayoutParams(params);
+        listView.requestLayout();
+    }
+
 
     @Override
     protected void onStart() {
