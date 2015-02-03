@@ -30,7 +30,7 @@ public class PersonArrayAdapter extends ArrayAdapter<Person> {
         Person person = ppl[position];
 
         TextView textView = (TextView) rowView.findViewById(R.id.description);
-        textView.setText(person.getFirstName() + " " + person.getLastName() + ". Matter: " + person.getMatterId());
+        textView.setText(person.getFirstName() + " " + person.getLastName() + "\nMatter: " + person.getMatterId());
 
         ImageView imageView = (ImageView) rowView.findViewById(R.id.avatar);
         if (Person.Sex.Male.equals(person.getSex())) {
