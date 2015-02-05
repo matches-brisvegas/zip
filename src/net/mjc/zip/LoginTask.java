@@ -39,38 +39,16 @@ public class LoginTask extends AsyncTask<String, Void, String> {
 
     protected String doInBackground(String... urls) {
         try {
-//            HttpParams httpParams = new BasicHttpParams();
-//
-//            SSLContext ctx = SSLContext.getInstance("SSL");
-//            ctx.init(new KeyManager[0], new TrustManager[] {new DefaultTrustManager()}, new SecureRandom());
-//            SSLContext.setDefault(ctx);
-//
-//            HttpClientParams.setRedirecting(httpParams, true);
-
-//            SSLSocketFactory sf = new SSLSocketFactory(ctx);
-//            Scheme httpsScheme = new Scheme("https", sf, 443);
-//            SchemeRegistry schemeRegistry = new SchemeRegistry();
-//            schemeRegistry.register(httpsScheme);
-//
-//            ClientConnectionManager cm = new SingleClientConnManager(httpParams); //, schemeRegistry);
-//            HttpClient client = new DefaultHttpClient(httpParams);
-//            conn.setHostnameVerifier(new HostnameVerifier() {
-//                @Override
-//                public boolean verify(String arg0, SSLSession arg1) {
-//                    return true;
-//                }
-//            });
-
-
+            SSLSocketFactory socketFactory = SSLSocketFactory.getSocketFactory();
             HostnameVerifier hostnameVerifier = org.apache.http.conn.ssl.SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER;
-
-            DefaultHttpClient client = new DefaultHttpClient();
+            socketFactory.setHostnameVerifier((X509HostnameVerifier) hostnameVerifier);
 
             SchemeRegistry registry = new SchemeRegistry();
-            SSLSocketFactory socketFactory = SSLSocketFactory.getSocketFactory();
-            socketFactory.setHostnameVerifier((X509HostnameVerifier) hostnameVerifier);
             registry.register(new Scheme("https", socketFactory, 443));
+
+            DefaultHttpClient client = new DefaultHttpClient();
             SingleClientConnManager mgr = new SingleClientConnManager(client.getParams(), registry);
+
             DefaultHttpClient httpClient = new DefaultHttpClient(mgr, client.getParams());
             HttpsURLConnection.setDefaultHostnameVerifier(hostnameVerifier);
 
@@ -91,20 +69,6 @@ public class LoginTask extends AsyncTask<String, Void, String> {
 
         } catch (Exception e) {
             this.exception = e;
-            return null;
-        }
-    }
-
-    private static class DefaultTrustManager implements X509TrustManager {
-
-        @Override
-        public void checkClientTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {}
-
-        @Override
-        public void checkServerTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {}
-
-        @Override
-        public X509Certificate[] getAcceptedIssuers() {
             return null;
         }
     }
