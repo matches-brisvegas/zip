@@ -1,25 +1,21 @@
 package net.mjc.zip;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.DialogFragment;
-import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.ExpandableListView;
 import android.widget.ListView;
 import net.mjc.zip.domain.IdCheck;
 import net.mjc.zip.domain.Person;
 
-public class JobsActivity extends Activity implements LoginDialog.Listener {
+public class JobsActivity extends Activity implements LoginDialog.Listener, LoginTask.Listener {
 
     private boolean loggedIn;
     private Person[] ppl;
     private Person[] pplDone;
+    private LoginDialog dialog;
+
 
     public boolean isLoggedIn() {
         return loggedIn;
@@ -88,6 +84,8 @@ public class JobsActivity extends Activity implements LoginDialog.Listener {
 
 //        login();
 
+        dialog = new LoginDialog(this);
+
         ListView listAwaiting = (ListView) findViewById(R.id.listAwaitingView);
         listAwaiting.setAdapter(new PersonArrayAdapter(this, ppl));
 
@@ -132,7 +130,7 @@ public class JobsActivity extends Activity implements LoginDialog.Listener {
     }
 
     public void showAlertDialog() {
-        final LoginDialog dialog = new LoginDialog(this);
+//        final LoginDialog dialog = new LoginDialog(this);
         dialog.setListener(this);
         dialog.show();
 
@@ -166,9 +164,14 @@ public class JobsActivity extends Activity implements LoginDialog.Listener {
     @Override
     public void onSigninClick(LoginDialog dialog) {
 
-        // TODO login
+        new LoginTask(this).execute();
+    }
 
-        this.setTitle(getText(R.string.jobs) + " - Logged in");
+    @Override
+    public void onComplete(String token, Exception ex) {
+        if (ex == null) {
+            this.setTitle(getText(R.string.jobs) + " - Logged in");
+        }
         dialog.dismiss();
     }
 }
