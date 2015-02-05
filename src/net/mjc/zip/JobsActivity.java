@@ -1,16 +1,21 @@
 package net.mjc.zip;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.DialogFragment;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.ListView;
 import net.mjc.zip.domain.IdCheck;
 import net.mjc.zip.domain.Person;
 
-public class LoginActivity extends Activity {
+public class JobsActivity extends Activity implements LoginDialog.Listener {
 
     private boolean loggedIn;
     private Person[] ppl;
@@ -81,6 +86,8 @@ public class LoginActivity extends Activity {
         pplDone[2].setIdCheck(IdCheck.getIdCheck("NSW-01")); // TODO
         pplDone[2].setIdCheckComplete(true);
 
+//        login();
+
         ListView listAwaiting = (ListView) findViewById(R.id.listAwaitingView);
         listAwaiting.setAdapter(new PersonArrayAdapter(this, ppl));
 
@@ -124,10 +131,25 @@ public class LoginActivity extends Activity {
         login();
     }
 
+    public void showAlertDialog() {
+        final LoginDialog dialog = new LoginDialog(this);
+        dialog.setListener(this);
+        dialog.show();
+
+//        final Button button = (Button) dialog.findViewById(R.id.signinButton);
+//        button.setOnClickListener(new View.OnClickListener() {
+//            public void onClick(View v) {
+//                onSigninClick(dialog);
+//                loggedIn = true;
+//            }
+//        });
+
+    }
+
     private void login() {
 
         if (!isLoggedIn()) {
-
+            showAlertDialog();
         }
     }
 
@@ -139,5 +161,14 @@ public class LoginActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
+    }
+
+    @Override
+    public void onSigninClick(LoginDialog dialog) {
+
+        // TODO login
+
+        this.setTitle(getText(R.string.jobs) + " - Logged in");
+        dialog.dismiss();
     }
 }

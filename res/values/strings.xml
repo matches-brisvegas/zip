@@ -3,6 +3,11 @@
     <string name="app_name">ZipID</string>
     <string name="awaiting_verification">Awaiting Verification</string>
     <string name="completed">Completed</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="signin">Sign In</string>
+    <string name="cancel">Cancel</string>
+    <string name="jobs">Jobs</string>
 
     <color name="main_color_light">#ffE9EBE8</color>
 </resources>
