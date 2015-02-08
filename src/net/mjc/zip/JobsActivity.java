@@ -1,28 +1,30 @@
 package net.mjc.zip;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 import net.mjc.zip.domain.IdCheck;
 import net.mjc.zip.domain.Person;
+
+import java.io.Serializable;
 
 public class JobsActivity extends Activity implements LoginDialog.Listener, LoginTask.Listener {
 
     private boolean loggedIn;
     private Person[] ppl;
     private Person[] pplDone;
-    private LoginDialog dialog;
+    private LoginDialog loginDialog;
 
+    private ActivityState state;
 
     public boolean isLoggedIn() {
         return loggedIn;
-    }
-
-    public void setLoggedIn(boolean loggedIn) {
-        this.loggedIn = loggedIn;
     }
 
     /**
@@ -32,7 +34,14 @@ public class JobsActivity extends Activity implements LoginDialog.Listener, Logi
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.main);
+        setContentView(R.layout.jobs);
+
+        if (savedInstanceState != null) {
+            Serializable s = savedInstanceState.getSerializable(null);
+            if (s instanceof ActivityState) {
+                state = (ActivityState) s;
+            }
+        }
 
         ppl = new Person[3];
 
@@ -41,21 +50,22 @@ public class JobsActivity extends Activity implements LoginDialog.Listener, Logi
         ppl[0].setLastName("Bloggs");
         ppl[0].setSex(Person.Sex.Male);
         ppl[0].setMatterId(5464233);
-        ppl[0].setIdCheck(IdCheck.getIdCheck("NSW-01")); // TODO
+        ppl[0].addIdCheck(IdCheck.getIdCheck(IdCheck.CUSTOMER_SIG));
+        ppl[0].addIdCheck(IdCheck.getIdCheck(IdCheck.WITNESS_SIG));
 
         ppl[1] = new Person();
         ppl[1].setFirstName("Michelle");
         ppl[1].setLastName("Jones");
         ppl[1].setSex(Person.Sex.Female);
         ppl[1].setMatterId(5632981);
-        ppl[1].setIdCheck(IdCheck.getIdCheck("NSW-01")); // TODO
+        ppl[1].addIdCheck(IdCheck.getIdCheck(IdCheck.CUSTOMER_SIG));
 
         ppl[2] = new Person();
         ppl[2].setFirstName("Karen");
         ppl[2].setLastName("Smith");
         ppl[2].setSex(Person.Sex.Female);
         ppl[2].setMatterId(8743754);
-        ppl[2].setIdCheck(IdCheck.getIdCheck("NSW-01")); // TODO
+        ppl[2].addIdCheck(IdCheck.getIdCheck(IdCheck.CUSTOMER_SIG));
 
         pplDone = new Person[3];
         pplDone[0] = new Person();
@@ -63,7 +73,7 @@ public class JobsActivity extends Activity implements LoginDialog.Listener, Logi
         pplDone[0].setLastName("Bobby");
         pplDone[0].setSex(Person.Sex.Male);
         pplDone[0].setMatterId(2316490);
-        pplDone[0].setIdCheck(IdCheck.getIdCheck("NSW-01")); // TODO
+        pplDone[0].addIdCheck(IdCheck.getIdCheck(IdCheck.CUSTOMER_SIG));
         pplDone[0].setIdCheckComplete(true);
 
         pplDone[1] = new Person();
@@ -71,7 +81,7 @@ public class JobsActivity extends Activity implements LoginDialog.Listener, Logi
         pplDone[1].setLastName("Knowles");
         pplDone[1].setSex(Person.Sex.Female);
         pplDone[1].setMatterId(3276490);
-        pplDone[1].setIdCheck(IdCheck.getIdCheck("NSW-01")); // TODO
+        pplDone[1].addIdCheck(IdCheck.getIdCheck(IdCheck.CUSTOMER_SIG));
         pplDone[1].setIdCheckComplete(true);
 
         pplDone[2] = new Person();
@@ -79,14 +89,28 @@ public class JobsActivity extends Activity implements LoginDialog.Listener, Logi
         pplDone[2].setLastName("Miller");
         pplDone[2].setSex(Person.Sex.Male);
         pplDone[2].setMatterId(5516490);
-        pplDone[2].setIdCheck(IdCheck.getIdCheck("NSW-01")); // TODO
+        pplDone[2].addIdCheck(IdCheck.getIdCheck(IdCheck.CUSTOMER_SIG));
         pplDone[2].setIdCheckComplete(true);
 
 //        login();
 
-        dialog = new LoginDialog(this);
+        loginDialog = new LoginDialog(this);
 
-        ListView listAwaiting = (ListView) findViewById(R.id.listAwaitingView);
+        final ListView listAwaiting = (ListView) findViewById(R.id.listAwaitingView);
+        listAwaiting.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                final PersonArrayAdapter adapter = (PersonArrayAdapter)listAwaiting.getAdapter();
+                final Person person = adapter.getItem(position);
+//                state = new ActivityState(person.getIdChecks());
+                state = new ActivityState(person);
+                try {
+                    startActivity(state.getNextActivity(JobsActivity.this));
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
         listAwaiting.setAdapter(new PersonArrayAdapter(this, ppl));
 
         ListView listDone = (ListView) findViewById(R.id.listCompletedView);
@@ -94,6 +118,11 @@ public class JobsActivity extends Activity implements LoginDialog.Listener, Logi
 
         setListViewHeightBasedOnChildren(listAwaiting);
         setListViewHeightBasedOnChildren(listDone);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
     }
 
 
@@ -129,15 +158,15 @@ public class JobsActivity extends Activity implements LoginDialog.Listener, Logi
         login();
     }
 
-    public void showAlertDialog() {
-//        final LoginDialog dialog = new LoginDialog(this);
-        dialog.setListener(this);
-        dialog.show();
+    public void showLoginDialog() {
+//        final LoginDialog loginDialog = new LoginDialog(this);
+        loginDialog.setListener(this);
+        loginDialog.show();
 
-//        final Button button = (Button) dialog.findViewById(R.id.signinButton);
+//        final Button button = (Button) loginDialog.findViewById(R.id.signinButton);
 //        button.setOnClickListener(new View.OnClickListener() {
 //            public void onClick(View v) {
-//                onSigninClick(dialog);
+//                onSigninClick(loginDialog);
 //                loggedIn = true;
 //            }
 //        });
@@ -147,7 +176,7 @@ public class JobsActivity extends Activity implements LoginDialog.Listener, Logi
     private void login() {
 
         if (!isLoggedIn()) {
-            showAlertDialog();
+            showLoginDialog();
         }
     }
 
@@ -172,6 +201,7 @@ public class JobsActivity extends Activity implements LoginDialog.Listener, Logi
         if (ex == null) {
             this.setTitle(getText(R.string.jobs) + " - Logged in");
         }
-        dialog.dismiss();
+        loggedIn = true;
+        loginDialog.dismiss();
     }
 }

@@ -3,10 +3,7 @@ package net.mjc.zip;
 import android.os.AsyncTask;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.params.HttpClientParams;
-import org.apache.http.conn.ClientConnectionManager;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.conn.ssl.SSLSocketFactory;
@@ -14,15 +11,11 @@ import org.apache.http.conn.ssl.X509HostnameVerifier;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.SingleClientConnManager;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
 
-import javax.net.ssl.*;
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
 import java.net.URI;
-import java.security.SecureRandom;
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
 
 public class LoginTask extends AsyncTask<String, Void, String> {
 
@@ -54,7 +47,7 @@ public class LoginTask extends AsyncTask<String, Void, String> {
 
             HttpPost loginReq = new HttpPost();
             loginReq.setURI(new URI("https://test.zipid.com.au/api/ios/login")); //?username=1&password=SeleniumTest1"));
-            loginReq.setEntity(new StringEntity("username=1&password=password"));
+            loginReq.setEntity(new StringEntity("username=100001&password=password"));
 
             HttpResponse response = httpClient.execute(loginReq);
 
