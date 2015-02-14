@@ -15,7 +15,6 @@ import android.widget.LinearLayout;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.Serializable;
 
 public class CaptureSignatureActivity extends Activity {
 
@@ -54,12 +53,7 @@ public class CaptureSignatureActivity extends Activity {
 
         if (getIntent().getExtras() != null) {
             state = ActivityState.fromJson(getIntent().getExtras().getString(ActivityState.class.getName()));
-
-//            final Serializable s = getIntent().getExtras().getSerializable(ActivityState.class.getName());
-//            if (s instanceof ActivityState) {
-//                state = (ActivityState) s;
-                this.setTitle(state.getCurrentIdCheck().getDescription());
-//            }
+            this.setTitle(state.getCurrentIdCheck().getDescription());
         }
     }
 
@@ -114,9 +108,7 @@ public class CaptureSignatureActivity extends Activity {
             final ByteArrayOutputStream bs = new ByteArrayOutputStream();
             returnedBitmap.compress(Bitmap.CompressFormat.PNG, 50, bs);
 
-//            final String name = state.getPerson().getMatterId() + "-" + state.getCurrentIdCheck().getCode() + ".png";
             final String name = "0-" + state.getCurrentIdCheck().getCode() + ".png";    //TODO
-
             final File file = new File(CaptureSignatureActivity.this.getFilesDir(), name);
 
             FileOutputStream outputStream;
@@ -128,7 +120,6 @@ public class CaptureSignatureActivity extends Activity {
                 e.printStackTrace();
             }
             Intent intent = new Intent();
-//            intent.putExtra("byteArray", bs.toByteArray());
             setResult(1, intent);
             finish();
         }

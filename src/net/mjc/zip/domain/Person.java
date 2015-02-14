@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 public class Person implements Serializable {
 
-    public static Person[] createPending() {
+    public static Person[] createAwaiting() {
         Person[] ppl = new Person[3];
 
         ppl[0] = new Person();
@@ -115,7 +115,6 @@ public class Person implements Serializable {
 
     public void addIdCheck(IdCheck idCheck) {
         this.idChecks.add(idCheck);
-        int i = 0;
     }
 
     public void setIdCheckComplete(boolean idCheckComplete) {
@@ -172,30 +171,4 @@ public class Person implements Serializable {
         }
         return null;
     }
-//    TODO JSON/GSON
-//    private void writeObject(java.io.ObjectOutputStream out) throws IOException {
-//        out.writeChars(firstName);
-//        out.writeChars(lastName);
-//        out.writeChars(sex.toString());
-//        out.writeBoolean(idCheckComplete);
-//        out.writeLong(matterId);
-//        out.writeInt(idChecks.size());
-//        for (IdCheck check : idChecks) {
-//            out.writeObject(check);
-//        }
-//    }
-//
-//    TODO JSON/GSON
-//    private void readObject(java.io.ObjectInputStream in) throws IOException, ClassNotFoundException {
-//        firstName = in.readUTF();
-//        lastName = in.readUTF();
-//        sex = Sex.valueOf(in.readUTF());
-//        idCheckComplete = in.readBoolean();
-//        matterId = in.readLong();
-//        int sz = in.readInt();
-//        idChecks = new ArrayList<IdCheck>(sz);
-//        for (int i = 0; i < sz; i++) {
-//            idChecks.add((IdCheck) in.readObject());
-//        }
-//    }
 }

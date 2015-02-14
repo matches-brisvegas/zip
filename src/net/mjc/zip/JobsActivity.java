@@ -24,9 +24,6 @@ public class JobsActivity extends Activity implements LoginDialog.Listener, Logi
         return loggedIn;
     }
 
-    /**
-     * Called when the activity is first created.
-     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,10 +37,8 @@ public class JobsActivity extends Activity implements LoginDialog.Listener, Logi
             }
         }
 
-        Person[] ppl = Person.createPending();
+        Person[] ppl = Person.createAwaiting();
         Person[] pplDone = Person.createDone();
-
-//        login();
 
         loginDialog = new LoginDialog(this);
 
@@ -53,7 +48,6 @@ public class JobsActivity extends Activity implements LoginDialog.Listener, Logi
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 final PersonArrayAdapter adapter = (PersonArrayAdapter)listAwaiting.getAdapter();
                 final Person person = adapter.getItem(position);
-//                state = new ActivityState(person.getIdChecks());
                 state = new ActivityState(person);
                 try {
                     startActivityForResult(state.getNextActivity(JobsActivity.this), 100);
@@ -98,7 +92,6 @@ public class JobsActivity extends Activity implements LoginDialog.Listener, Logi
 
         ArrayAdapter listAdapter = (ArrayAdapter) listView.getAdapter();
         if (listAdapter == null) {
-            // pre-condition
             return;
         }
 
@@ -123,18 +116,8 @@ public class JobsActivity extends Activity implements LoginDialog.Listener, Logi
     }
 
     public void showLoginDialog() {
-//        final LoginDialog loginDialog = new LoginDialog(this);
         loginDialog.setListener(this);
         loginDialog.show();
-
-//        final Button button = (Button) loginDialog.findViewById(R.id.signinButton);
-//        button.setOnClickListener(new View.OnClickListener() {
-//            public void onClick(View v) {
-//                onSigninClick(loginDialog);
-//                loggedIn = true;
-//            }
-//        });
-
     }
 
     private void login() {

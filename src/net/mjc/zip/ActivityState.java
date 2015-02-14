@@ -12,30 +12,19 @@ import java.io.Serializable;
 public class ActivityState implements Serializable {
 
     private Person person;
-    //    private final IdCheck[] idChecks;
     private int current = -1;
 
-    //    public ActivityState(ArrayList<IdCheck> idChecks) {
     public ActivityState(Person person) {
-//        this.idChecks = idChecks.toArray(new IdCheck[idChecks.size()]);
         this.person = person;
     }
 
-    //    public Person getPerson() {
-//        return person;
-//    }
-//
     public IdCheck getCurrentIdCheck() {
-//        return idChecks[current];
         return person.getIdChecks().get(current);
     }
 
     public Intent getNextActivity(Context context) throws ClassNotFoundException {
         this.current++;
-//        if (current >= idChecks.length) {
         if (current >= person.getIdChecks().size()) {
-//            throw new RuntimeException("Unexpected next activity: " + current + " into " + Arrays.toString(idChecks));
-//            throw new RuntimeException("Unexpected next activity: " + current + " into " + person.toString());
             return null;
         }
         Intent intent = new Intent(context, getCurrentIdCheck().getActivityClass());
