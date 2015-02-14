@@ -29,7 +29,7 @@ public class IdCheck implements Serializable {
         idCheck2.setCode(WITNESS_SIG);
         idCheck2.setDescription("Witness Signature");
         idCheck2.setActivityClass(CaptureSignatureActivity.class.getName());
-        idChecks.put(idCheck1.getCode(), idCheck2);
+        idChecks.put(idCheck2.getCode(), idCheck2);
     }
 
     public void setActivityClass(String activityClass) {

@@ -35,7 +35,8 @@ public class ActivityState implements Serializable {
 //        if (current >= idChecks.length) {
         if (current >= person.getIdChecks().size()) {
 //            throw new RuntimeException("Unexpected next activity: " + current + " into " + Arrays.toString(idChecks));
-            throw new RuntimeException("Unexpected next activity: " + current + " into " + person.toString());
+//            throw new RuntimeException("Unexpected next activity: " + current + " into " + person.toString());
+            return null;
         }
         Intent intent = new Intent(context, getCurrentIdCheck().getActivityClass());
         intent.putExtra(ActivityState.class.getName(), toJson(this));

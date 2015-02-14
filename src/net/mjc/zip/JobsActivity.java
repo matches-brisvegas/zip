@@ -7,18 +7,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.ListView;
-import net.mjc.zip.domain.IdCheck;
 import net.mjc.zip.domain.Person;
+import net.mjc.zip.task.LoginTask;
 
 import java.io.Serializable;
 
 public class JobsActivity extends Activity implements LoginDialog.Listener, LoginTask.Listener {
 
     private boolean loggedIn;
-    private Person[] ppl;
-    private Person[] pplDone;
     private LoginDialog loginDialog;
 
     private ActivityState state;
@@ -43,54 +40,8 @@ public class JobsActivity extends Activity implements LoginDialog.Listener, Logi
             }
         }
 
-        ppl = new Person[3];
-
-        ppl[0] = new Person();
-        ppl[0].setFirstName("Joe");
-        ppl[0].setLastName("Bloggs");
-        ppl[0].setSex(Person.Sex.Male);
-        ppl[0].setMatterId(5464233);
-        ppl[0].addIdCheck(IdCheck.getIdCheck(IdCheck.CUSTOMER_SIG));
-        ppl[0].addIdCheck(IdCheck.getIdCheck(IdCheck.WITNESS_SIG));
-
-        ppl[1] = new Person();
-        ppl[1].setFirstName("Michelle");
-        ppl[1].setLastName("Jones");
-        ppl[1].setSex(Person.Sex.Female);
-        ppl[1].setMatterId(5632981);
-        ppl[1].addIdCheck(IdCheck.getIdCheck(IdCheck.CUSTOMER_SIG));
-
-        ppl[2] = new Person();
-        ppl[2].setFirstName("Karen");
-        ppl[2].setLastName("Smith");
-        ppl[2].setSex(Person.Sex.Female);
-        ppl[2].setMatterId(8743754);
-        ppl[2].addIdCheck(IdCheck.getIdCheck(IdCheck.CUSTOMER_SIG));
-
-        pplDone = new Person[3];
-        pplDone[0] = new Person();
-        pplDone[0].setFirstName("Ricky");
-        pplDone[0].setLastName("Bobby");
-        pplDone[0].setSex(Person.Sex.Male);
-        pplDone[0].setMatterId(2316490);
-        pplDone[0].addIdCheck(IdCheck.getIdCheck(IdCheck.CUSTOMER_SIG));
-        pplDone[0].setIdCheckComplete(true);
-
-        pplDone[1] = new Person();
-        pplDone[1].setFirstName("Elizabeth");
-        pplDone[1].setLastName("Knowles");
-        pplDone[1].setSex(Person.Sex.Female);
-        pplDone[1].setMatterId(3276490);
-        pplDone[1].addIdCheck(IdCheck.getIdCheck(IdCheck.CUSTOMER_SIG));
-        pplDone[1].setIdCheckComplete(true);
-
-        pplDone[2] = new Person();
-        pplDone[2].setFirstName("Charles");
-        pplDone[2].setLastName("Miller");
-        pplDone[2].setSex(Person.Sex.Male);
-        pplDone[2].setMatterId(5516490);
-        pplDone[2].addIdCheck(IdCheck.getIdCheck(IdCheck.CUSTOMER_SIG));
-        pplDone[2].setIdCheckComplete(true);
+        Person[] ppl = Person.createPending();
+        Person[] pplDone = Person.createDone();
 
 //        login();
 
@@ -105,7 +56,7 @@ public class JobsActivity extends Activity implements LoginDialog.Listener, Logi
 //                state = new ActivityState(person.getIdChecks());
                 state = new ActivityState(person);
                 try {
-                    startActivity(state.getNextActivity(JobsActivity.this));
+                    startActivityForResult(state.getNextActivity(JobsActivity.this), 100);
                 } catch (ClassNotFoundException e) {
                     e.printStackTrace();
                 }
@@ -118,6 +69,19 @@ public class JobsActivity extends Activity implements LoginDialog.Listener, Logi
 
         setListViewHeightBasedOnChildren(listAwaiting);
         setListViewHeightBasedOnChildren(listDone);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        try {
+            Intent i = state.getNextActivity(JobsActivity.this);
+            if (i != null) {
+                startActivityForResult(i, 100);
+            }
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -197,7 +161,7 @@ public class JobsActivity extends Activity implements LoginDialog.Listener, Logi
     }
 
     @Override
-    public void onComplete(String token, Exception ex) {
+    public void onLoginComplete(String token, Exception ex) {
         if (ex == null) {
             this.setTitle(getText(R.string.jobs) + " - Logged in");
         }

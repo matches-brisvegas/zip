@@ -1,4 +1,4 @@
-package net.mjc.zip;
+package net.mjc.zip.task;
 
 import android.os.AsyncTask;
 import org.apache.http.HttpResponse;
@@ -19,8 +19,8 @@ import java.net.URI;
 
 public class LoginTask extends AsyncTask<String, Void, String> {
 
-    interface Listener {
-        void onComplete(String token, Exception ex);
+    public interface Listener {
+        void onLoginComplete(String token, Exception ex);
     }
 
     private Listener listener;
@@ -47,7 +47,7 @@ public class LoginTask extends AsyncTask<String, Void, String> {
 
             HttpPost loginReq = new HttpPost();
             loginReq.setURI(new URI("https://test.zipid.com.au/api/ios/login")); //?username=1&password=SeleniumTest1"));
-            loginReq.setEntity(new StringEntity("username=100001&password=password"));
+            loginReq.setEntity(new StringEntity("username=100009&password=password"));
 
             HttpResponse response = httpClient.execute(loginReq);
 
@@ -67,7 +67,7 @@ public class LoginTask extends AsyncTask<String, Void, String> {
     }
 
     protected void onPostExecute(String token) {
-        listener.onComplete(token, exception);
+        listener.onLoginComplete(token, exception);
     }
 }
 
