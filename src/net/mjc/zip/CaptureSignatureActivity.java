@@ -12,10 +12,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-
 public class CaptureSignatureActivity extends Activity {
 
     private SignatureView signatureView;
@@ -105,20 +101,8 @@ public class CaptureSignatureActivity extends Activity {
             }
             content.draw(canvas);
 
-            final ByteArrayOutputStream bs = new ByteArrayOutputStream();
-            returnedBitmap.compress(Bitmap.CompressFormat.PNG, 50, bs);
+            Utils.saveBitmap(getFilesDir(), state, returnedBitmap);
 
-            final String name = "0-" + state.getCurrentIdCheck().getCode() + ".png";    //TODO
-            final File file = new File(CaptureSignatureActivity.this.getFilesDir(), name);
-
-            FileOutputStream outputStream;
-            try {
-                outputStream = new FileOutputStream(file);
-                outputStream.write(bs.toByteArray());
-                outputStream.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
             Intent intent = new Intent();
             setResult(1, intent);
             finish();

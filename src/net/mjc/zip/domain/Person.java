@@ -17,6 +17,7 @@ public class Person implements Serializable {
         ppl[0].setLastName("Bloggs");
         ppl[0].setSex(Person.Sex.Male);
         ppl[0].setMatterId(5464233);
+        ppl[0].addIdCheck(IdCheck.getIdCheck(IdCheck.DRIVER_LICENSE));
         ppl[0].addIdCheck(IdCheck.getIdCheck(IdCheck.CUSTOMER_SIG));
         ppl[0].addIdCheck(IdCheck.getIdCheck(IdCheck.WITNESS_SIG));
 
