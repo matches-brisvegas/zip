@@ -26,7 +26,9 @@ public class Person implements Serializable {
         ppl[1].setLastName("Jones");
         ppl[1].setSex(Person.Sex.Female);
         ppl[1].setMatterId(5632981);
+        ppl[1].addIdCheck(IdCheck.getIdCheck(IdCheck.PASSPORT));
         ppl[1].addIdCheck(IdCheck.getIdCheck(IdCheck.CUSTOMER_SIG));
+        ppl[1].addIdCheck(IdCheck.getIdCheck(IdCheck.WITNESS_SIG));
 
         ppl[2] = new Person();
         ppl[2].setFirstName("Karen");

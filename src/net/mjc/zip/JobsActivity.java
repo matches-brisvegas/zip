@@ -2,22 +2,23 @@ package net.mjc.zip;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 import net.mjc.zip.domain.IdCheck;
 import net.mjc.zip.domain.Person;
 import net.mjc.zip.task.LoginTask;
 
 import java.io.Serializable;
 
-public class JobsActivity extends Activity implements LoginDialog.Listener, LoginTask.Listener {
+public class JobsActivity extends Activity implements LoginDialog.Listener, LoginTask.Listener, IdChecksRequiredDialog.Listener {
 
     private LoginDialog loginDialog;
+    private IdChecksRequiredDialog idChecksRequiredDialog;
     private ActivityState state;
 
     @Override
@@ -37,6 +38,7 @@ public class JobsActivity extends Activity implements LoginDialog.Listener, Logi
         Person[] pplDone = Person.createDone();
 
         loginDialog = new LoginDialog(this);
+        state = new ActivityState();
 
         final ListView listAwaiting = (ListView) findViewById(R.id.listAwaitingView);
         listAwaiting.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -44,20 +46,9 @@ public class JobsActivity extends Activity implements LoginDialog.Listener, Logi
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 final PersonArrayAdapter adapter = (PersonArrayAdapter) listAwaiting.getAdapter();
                 final Person person = adapter.getItem(position);
-                state = new ActivityState(person);
-
-//                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-//                if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-//                    startActivityForResult(takePictureIntent, 1);
-//                }
-                IdCheck next = state.getNextIdCheck();
-                if (next != null) {
-                    Intent intent = next.createIntent(JobsActivity.this);
-                    if (intent != null) {
-                        intent.putExtra(ActivityState.class.getName(), ActivityState.toJson(state));
-                        startActivityForResult(intent, next.getCode());
-                    }
-                }
+                state.setPerson(person);
+                state.beginIdChecks();
+                showIdChecksRequiredDialog();
             }
         });
         listAwaiting.setAdapter(new PersonArrayAdapter(this, ppl));
@@ -74,8 +65,8 @@ public class JobsActivity extends Activity implements LoginDialog.Listener, Logi
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == IdCheck.DRIVER_LICENSE && resultCode == RESULT_OK) {
-            Bitmap photo = (Bitmap) data.getExtras().get("data");
-            Utils.saveBitmap(getFilesDir(), state, photo);  // TODO EXTRA_OUTPUT
+//            Bitmap photo = (Bitmap) data.getExtras().get("data");     //TODO
+//            Utils.saveBitmap(getFilesDir(), state, photo);  // TODO EXTRA_OUTPUT
         }
         IdCheck next = state.getNextIdCheck();
         if (next != null) {
@@ -123,7 +114,6 @@ public class JobsActivity extends Activity implements LoginDialog.Listener, Logi
         listView.requestLayout();
     }
 
-
     @Override
     protected void onStart() {
         super.onStart();
@@ -135,8 +125,24 @@ public class JobsActivity extends Activity implements LoginDialog.Listener, Logi
         loginDialog.show();
     }
 
-    private void login() {
+    public void showIdChecksRequiredDialog() {
 
+        final Person person = state.getPerson();
+        final StringBuilder text = new StringBuilder();
+
+        text.append("The following Identification Checks are required :\n\n");
+
+        for (IdCheck check : person.getIdChecks()) {
+            text.append(" - ");
+            text.append(check.getDescription());
+            text.append("\n");
+        }
+        idChecksRequiredDialog = new IdChecksRequiredDialog(this, person.getFirstName() + " " + person.getLastName(), text.toString());
+        idChecksRequiredDialog.setListener(this);
+        idChecksRequiredDialog.show();
+    }
+
+    private void login() {
         if (!state.isLoggedIn()) {
             showLoginDialog();
         }
@@ -154,7 +160,6 @@ public class JobsActivity extends Activity implements LoginDialog.Listener, Logi
 
     @Override
     public void onSigninClick(LoginDialog dialog) {
-
         new LoginTask(this).execute();
     }
 
@@ -165,5 +170,23 @@ public class JobsActivity extends Activity implements LoginDialog.Listener, Logi
         }
         state.setLoggedIn(true);
         loginDialog.dismiss();
+    }
+
+    @Override
+    public void onOkClick(IdChecksRequiredDialog dialog) {
+
+        idChecksRequiredDialog.dismiss();
+        IdCheck next = state.getCurrentIdCheck();
+
+        if (next != null) {
+            if (next.getToast() != null) {
+                Toast.makeText(getApplicationContext(), next.getToast(), Toast.LENGTH_LONG).show();
+            }
+            Intent intent = next.createIntent(JobsActivity.this);
+            if (intent != null) {
+                intent.putExtra(ActivityState.class.getName(), ActivityState.toJson(state));
+                startActivityForResult(intent, next.getCode());
+            }
+        }
     }
 }

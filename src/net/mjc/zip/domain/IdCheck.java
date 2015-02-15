@@ -3,6 +3,7 @@ package net.mjc.zip.domain;
 import android.content.Context;
 import android.content.Intent;
 import android.provider.MediaStore;
+import net.mjc.zip.CameraActivity;
 import net.mjc.zip.CaptureSignatureActivity;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -15,12 +16,14 @@ public class IdCheck implements Serializable {  //TODO
     public static final int CUSTOMER_SIG =100;
     public static final int WITNESS_SIG = 200;
     public static final int DRIVER_LICENSE = 300;
+    public static final int PASSPORT = 400;
 
     private static HashMap<Integer, IdCheck> idChecks = new HashMap<Integer, IdCheck>();
 
     private int code;
     private String description;
     private String activityClass;
+    private String toast;
 
     static {
         IdCheck customerSig = new IdCheck();
@@ -38,8 +41,24 @@ public class IdCheck implements Serializable {  //TODO
         IdCheck driverLicense = new PhotoIdCheck();
         driverLicense.setCode(DRIVER_LICENSE);
         driverLicense.setDescription("Driver's License");
+        driverLicense.setToast("Capture Driver's License");
         driverLicense.setActivityClass(MediaStore.ACTION_IMAGE_CAPTURE);
         idChecks.put(driverLicense.getCode(), driverLicense);
+
+        IdCheck passport = new IdCheck();
+        passport.setActivityClass(CameraActivity.class.getName());
+        passport.setCode(PASSPORT);
+        passport.setDescription("Passport");
+        passport.setToast("Capture Passport");
+        idChecks.put(passport.getCode(), passport);
+    }
+
+    public String getToast() {
+        return toast;
+    }
+
+    public void setToast(String toast) {
+        this.toast = toast;
     }
 
     public void setActivityClass(String activityClass) {

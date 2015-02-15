@@ -17,7 +17,7 @@ public class ActivityState implements Serializable {
         return loggedIn;
     }
 
-    public ActivityState(Person person) {
+    public void setPerson(Person person) {
         this.person = person;
     }
 
@@ -48,8 +48,8 @@ public class ActivityState implements Serializable {
         try {
             JSONObject jsonObj = new JSONObject(json);
 
-            Person person = Person.fromJson((String) jsonObj.get("person"));
-            ActivityState state = new ActivityState(person);
+            ActivityState state = new ActivityState();
+            state.person = Person.fromJson((String) jsonObj.get("person"));
             state.current = jsonObj.getInt("current");
             state.loggedIn = jsonObj.getBoolean("loggedIn");
             return state;
@@ -76,5 +76,10 @@ public class ActivityState implements Serializable {
 
     public void setLoggedIn(boolean loggedIn) {
         this.loggedIn = loggedIn;
+    }
+
+    public IdCheck beginIdChecks() {
+        this.current = -1;
+        return getNextIdCheck();
     }
 }
