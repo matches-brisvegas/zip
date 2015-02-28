@@ -3,6 +3,7 @@ package net.mjc.zip.domain;
 import android.content.Context;
 import android.content.Intent;
 import android.provider.MediaStore;
+import android.widget.Toast;
 import net.mjc.zip.CameraActivity;
 import net.mjc.zip.CaptureSignatureActivity;
 import org.json.JSONException;
@@ -23,7 +24,7 @@ public class IdCheck implements Serializable {  //TODO
     private int code;
     private String description;
     private String activityClass;
-    private String toast;
+    private String actionText;
 
     static {
         IdCheck customerSig = new IdCheck();
@@ -41,7 +42,7 @@ public class IdCheck implements Serializable {  //TODO
         IdCheck driverLicense = new PhotoIdCheck();
         driverLicense.setCode(DRIVER_LICENSE);
         driverLicense.setDescription("Driver's License");
-        driverLicense.setToast("Capture Driver's License");
+        driverLicense.setActionText("Capture Driver's License");
         driverLicense.setActivityClass(MediaStore.ACTION_IMAGE_CAPTURE);
         idChecks.put(driverLicense.getCode(), driverLicense);
 
@@ -49,16 +50,24 @@ public class IdCheck implements Serializable {  //TODO
         passport.setActivityClass(CameraActivity.class.getName());
         passport.setCode(PASSPORT);
         passport.setDescription("Passport");
-        passport.setToast("Capture Passport");
+        passport.setActionText("Capture Passport");
         idChecks.put(passport.getCode(), passport);
     }
 
-    public String getToast() {
-        return toast;
+    public String getActionText() {
+        return actionText;
     }
 
-    public void setToast(String toast) {
-        this.toast = toast;
+    public void setActionText(String actionText) {
+        this.actionText = actionText;
+    }
+
+    public Toast getToast(Context context) {
+        return null;
+    }
+
+    public android.app.AlertDialog getAlertDialog(Context context) {
+        return null;
     }
 
     public void setActivityClass(String activityClass) {

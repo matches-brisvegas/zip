@@ -27,7 +27,7 @@ public class PersonArrayAdapter extends ArrayAdapter<Person> {
         Person person = ppl[position];
 
         TextView nameView = (TextView) rowView.findViewById(R.id.name);
-        nameView.setText(person.getFirstName() + " " + person.getLastName());
+        nameView.setText(person.getFullName());
 
         TextView description = (TextView) rowView.findViewById(R.id.description);
         description.setText("Matter: " + person.getMatterId());

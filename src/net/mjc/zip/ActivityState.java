@@ -40,7 +40,7 @@ public class ActivityState implements Serializable {
 //    public Intent createIntent(Context context) throws ClassNotFoundException {
 //        final Intent intent = getCurrentIdCheck().createIntent(context);
 //        new Intent(context, getCurrentIdCheck().getActivityClass());
-//        intent.putExtra(ActivityState.class.getName(), toJson(this));
+//        intent.putExtra(ActivityState.class.getFullName(), toJson(this));
 //        return intent;
 //    }
 
@@ -63,9 +63,11 @@ public class ActivityState implements Serializable {
     public static String toJson(ActivityState state) {
         try {
             JSONObject jsonObj = new JSONObject();
-            jsonObj.put("person", Person.toJson(state.person));
-            jsonObj.put("current", state.current);
-            jsonObj.put("loggedIn", state.loggedIn);
+            if (state != null) {
+                jsonObj.put("person", Person.toJson(state.person));
+                jsonObj.put("current", state.current);
+                jsonObj.put("loggedIn", state.loggedIn);
+            }
             return jsonObj.toString();
 
         } catch (JSONException ex) {

@@ -94,7 +94,7 @@ public class CameraPreviewSurface extends SurfaceView implements SurfaceHolder.C
      * }
      * catch(Exception e)
      * {
-     * Log.d(this.getClass().getName(), "Cannot start preview", e);
+     * Log.d(this.getClass().getFullName(), "Cannot start preview", e);
      * }
      * }
      */

@@ -70,6 +70,10 @@ public class Person implements Serializable {
         return pplDone;
     }
 
+    public String getFullName() {
+        return getFirstName() + " " + getLastName();
+    }
+
     public enum Sex { Male, Female }
 
     private String firstName;
@@ -155,18 +159,20 @@ public class Person implements Serializable {
     public static String toJson(Person person) {
         try {
             JSONObject jsonObj = new JSONObject();
-            jsonObj.put("firstName", person.getFirstName());
-            jsonObj.put("lastName", person.getLastName());
-            jsonObj.put("sex", person.getSex().toString());
-            jsonObj.put("matterId", person.getMatterId());
-            jsonObj.put("idCheckComplete", person.isIdCheckComplete());
+            if (person != null) {
+                jsonObj.put("firstName", person.getFirstName());
+                jsonObj.put("lastName", person.getLastName());
+                jsonObj.put("sex", person.getSex().toString());
+                jsonObj.put("matterId", person.getMatterId());
+                jsonObj.put("idCheckComplete", person.isIdCheckComplete());
 
-            JSONArray jsonIdChecks = new JSONArray();
+                JSONArray jsonIdChecks = new JSONArray();
 
-            for (IdCheck check : person.getIdChecks()) {
-                jsonIdChecks.put(IdCheck.toJson(check));
+                for (IdCheck check : person.getIdChecks()) {
+                    jsonIdChecks.put(IdCheck.toJson(check));
+                }
+                jsonObj.put("idChecks", jsonIdChecks);
             }
-            jsonObj.put("idChecks", jsonIdChecks);
             return jsonObj.toString();
         }
         catch(JSONException ex) {

@@ -1,6 +1,8 @@
 package net.mjc.zip;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -68,14 +70,14 @@ public class JobsActivity extends Activity implements LoginDialog.Listener, Logi
 //            Bitmap photo = (Bitmap) data.getExtras().get("data");     //TODO
 //            Utils.saveBitmap(getFilesDir(), state, photo);  // TODO EXTRA_OUTPUT
         }
-        IdCheck next = state.getNextIdCheck();
-        if (next != null) {
-            Intent intent = next.createIntent(JobsActivity.this);
-            if (intent != null) {
-                intent.putExtra(ActivityState.class.getName(), ActivityState.toJson(state));
-                startActivityForResult(intent, next.getCode());
-            }
-        }
+        handleNextActivity(state.getNextIdCheck());
+//        if (next != null) {
+//            Intent intent = next.createIntent(JobsActivity.this);
+//            if (intent != null) {
+//                intent.putExtra(ActivityState.class.getFullName(), ActivityState.toJson(state));
+//                startActivityForResult(intent, next.getCode());
+//            }
+//        }
     }
 
     @Override
@@ -86,7 +88,7 @@ public class JobsActivity extends Activity implements LoginDialog.Listener, Logi
 
     @Override
     protected void onRestoreInstanceState(Bundle b) {
-        super.onCreate(b);
+        super.onRestoreInstanceState(b);
         state = ActivityState.fromJson(getIntent().getStringExtra(ActivityState.class.getName()));
     }
 
@@ -117,7 +119,6 @@ public class JobsActivity extends Activity implements LoginDialog.Listener, Logi
     @Override
     protected void onStart() {
         super.onStart();
-        login();
     }
 
     public void showLoginDialog() {
@@ -137,7 +138,7 @@ public class JobsActivity extends Activity implements LoginDialog.Listener, Logi
             text.append(check.getDescription());
             text.append("\n");
         }
-        idChecksRequiredDialog = new IdChecksRequiredDialog(this, person.getFirstName() + " " + person.getLastName(), text.toString());
+        idChecksRequiredDialog = new IdChecksRequiredDialog(this, person.getFullName(), text.toString());
         idChecksRequiredDialog.setListener(this);
         idChecksRequiredDialog.show();
     }
@@ -151,11 +152,13 @@ public class JobsActivity extends Activity implements LoginDialog.Listener, Logi
     @Override
     protected void onRestart() {
         super.onRestart();
+        login();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        login();
     }
 
     @Override
@@ -176,17 +179,40 @@ public class JobsActivity extends Activity implements LoginDialog.Listener, Logi
     public void onOkClick(IdChecksRequiredDialog dialog) {
 
         idChecksRequiredDialog.dismiss();
-        IdCheck next = state.getCurrentIdCheck();
+        handleNextActivity(state.getCurrentIdCheck());
+    }
 
-        if (next != null) {
-            if (next.getToast() != null) {
-                Toast.makeText(getApplicationContext(), next.getToast(), Toast.LENGTH_LONG).show();
-            }
-            Intent intent = next.createIntent(JobsActivity.this);
-            if (intent != null) {
-                intent.putExtra(ActivityState.class.getName(), ActivityState.toJson(state));
-                startActivityForResult(intent, next.getCode());
-            }
+    private void handleNextActivity(final IdCheck next) {
+
+        if (next == null) return;
+
+        final Toast toast = next.getToast(JobsActivity.this);
+        if (toast != null) {
+            toast.show();
         }
+
+        final AlertDialog alertDialog = next.getAlertDialog(JobsActivity.this);
+
+        if (alertDialog == null) {
+            startIntent(next);
+        } else {
+            alertDialog.setTitle(state.getPerson().getFullName());
+            alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    startIntent(next);
+                }
+            });
+            alertDialog.show();
+        }
+    }
+
+    private void startIntent(final IdCheck next) {
+        Intent intent = next.createIntent(JobsActivity.this);
+        if (intent != null) {
+            intent.putExtra(ActivityState.class.getName(), ActivityState.toJson(state));
+            startActivityForResult(intent, next.getCode());
+        }
+
     }
 }
